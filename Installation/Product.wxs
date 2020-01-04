@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product
+    Id="*"
+    Name="My Windows Service"
+    Manufacturer="Carson Williams"
+    Version="1.0.0.0"
+    Language="1033"
+    UpgradeCode="8F5912F8-6DAA-4D1B-8D46-72D90D9A1C12">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+    <Feature Id="ProductFeature" Title="Windows Service Installer" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="My Windows Service" />
+      </Directory>
+    </Directory>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent">
+        <File
+          Id="WindowsServiceEXE"
+          Name="WindowsServiceTemplate.exe"
+          DiskId="1"
+          Source="$(var.WindowsServiceTemplate.TargetPath)"
+          Vital="yes"
+          KeyPath="yes" />
+        <ServiceInstall
+          Id="ServiceInstaller"
+          Name="MyWindowsService"
+          DisplayName="My Windows Service"
+          Type="ownProcess"
+          Vital="yes"
+          Description="Example Windows Service"
+          Start="auto"
+          Account="LocalSystem"
+          ErrorControl="normal"
+          Arguments="/start MyWindowsService"
+          Interactive="no" />
+        <ServiceControl
+          Id="StartService"
+          Name="MyWindowsService"
+          Stop="both"
+          Start="install"
+          Remove="both"
+          Wait="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
